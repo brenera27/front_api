@@ -1,0 +1,16 @@
+div.corpoImput{
+    background-color: #E9ECEF;
+    width: 55%;
+    height: 320px;
+    box-shadow: 5px 5px 5px 2.5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    text-align: left;
+}
+.conteudo-input{
+    padding-top: 3%;
+    padding-left: 3%;
+    padding-right: 3%;
+    
+}
+
+

@@ -1,0 +1,20 @@
+#botao-sair{
+    color: black;
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden; 
+    transition: all 0.1s;
+}
+#botao-sair:hover{
+    color:red;
+}
+.botao-menu{
+    color: white;
+    text-decoration: none;
+}
+.botao-menu:hover{
+    color:#616A71;
+    text-decoration: none;
+}

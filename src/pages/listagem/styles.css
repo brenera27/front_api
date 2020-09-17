@@ -1,0 +1,53 @@
+
+.corpoListagem{
+    margin-top: 30px;  
+    text-align: center;
+}
+.lista-Usuarios{
+    background-color: #E9ECEF;
+    width: 55%;
+    box-shadow: 5px 5px 5px 2.5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    text-align: left;
+}
+.table{
+    width: 100%;
+}
+
+.apagar{
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden; 
+    transition: all 0.1s;
+    cursor: pointer;
+    
+}
+.apagar:hover{
+    -webkit-transform: scale(1.2); 
+    transform: scale(1.2);
+    background-color: #FF6347;
+    border-radius: 10%;
+}
+.editar{
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden; 
+    transition: all 0.1s;
+    cursor: pointer;
+    
+}
+.editar:hover{
+    -webkit-transform: scale(1.2); 
+    transform: scale(1.2);
+    background-color: #FFD700	;
+    border-radius: 10%;
+}
+
+#barra-rolagem{
+    overflow: auto; 
+    height: 400px;
+}
