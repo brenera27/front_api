@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import "./styles.css";
-import Moment, { months } from "moment";
+//import Moment, { months } from "moment";
 import Cadastro from "../cadastraProd";
 
 export default class Main extends Component {
@@ -10,7 +10,12 @@ export default class Main extends Component {
     super(props);
     this.state = {
       produtos: [],
-      loading: null
+      loading: null,
+      total: null,
+      tabela: [],
+      page: 0,
+      qtdPag: 0,
+      botoes: []
     };
 
   }
@@ -20,14 +25,22 @@ export default class Main extends Component {
   }
   componentDidMount() {
     this.loadProducts();
-  }
 
+  }
+  calcTotalPages() {
+    let qtdPag = this.state.produtos.length / 5;
+    this.setState({ qtdPag: qtdPag });
+    this.geraBotoes();
+  }
   loadProducts = async () => {
     this.setState({ loading: <img width="36px" height="36px" src={require('../img/carregando.gif')} /> });
-    await axios.get('https://apitestenode.herokuapp.com/api/produtos').then(resultado => {
-      this.setState({ produtos: resultado.data });
+    await axios.get("https://apitestenode.herokuapp.com/api/produtos").then(resultado => {
+      this.setState({ produtos: resultado.data.produtos });
+      console.log(this.state.produtos);
     });
+    this.carrega();
     this.setState({ loading: null });
+    this.calcTotalPages();
   }
 
   update = (user) => {
@@ -47,9 +60,62 @@ export default class Main extends Component {
     }
     this.loadProducts();
   }
+  proxPage() {
+    this.carrega(this.state.page + 1);
+    this.setState({ page: this.state.page + 1 });
 
 
+  }
+  anterPage() {
+    if (this.state.page > 0) {
+      this.carrega(this.state.page - 1);
+      this.setState({ page: this.state.page - 1 });
+    }
+  }
+  geraBotoes() {
+    const qtd = this.state.qtdPag
+    let botoes = []
+    for (let i = 0; i < qtd; i++) {
+      botoes[i] = <li class="page-item"><a class="page-link" onClick={() => { this.botaoNum(i) }}>{i + 1}</a></li>
+    }
+    this.setState({ botoes: botoes });
+  }
 
+  botaoNum(page) {
+    this.setState({ page: page });
+    this.carrega(page);
+  }
+  carrega(num = this.state.page) {
+    const produtos = this.state.produtos;
+    let table = [];
+    let cont = num;
+    cont *= 5;
+    for (let i = cont; i < (cont + 5); i++) {
+      if (i < produtos.length) {
+        table[i] = <tbody>
+          <tr className="produto">
+            <th scope="row">{produtos[i].id}</th>
+            <td>{produtos[i].nome}</td>
+            <td>{produtos[i].tipo}</td>
+            <td>{produtos[i].estoque}</td>
+            <td>R${produtos[i].preco}</td>
+            <td>
+              <button className="editar" onClick={() => { this.update(produtos[i]); }}> <img src={require('../img/edit-24px.svg')} /></button>
+            </td>
+            <td>
+              <button className="apagar" onClick={() => { this.deleta(produtos[i].id); }}>
+                <img src={require('../img/delete-24px.svg')} />
+              </button>
+            </td>
+
+          </tr>
+
+        </tbody>
+      }
+    }
+
+    this.setState({ tabela: table })
+  }
 
   // calculaIdade(dataNascimento) {
   //   const agora = Moment();
@@ -75,48 +141,45 @@ export default class Main extends Component {
 
           <div className="lista-Usuarios">
 
-            <div id="barra-rolagem" class="card-body">
-              
-                <table  className="table table-borderless ">
-                  <caption>Total: {this.state.produtos.length}</caption>
-                  <thead class="thead">
-                    <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Nome</th>
-                      <th scope="col">Tipo</th>
-                      <th scope="col">Estoque</th>
-                      <th scope="col">Preço</th>
-                      <th scope="col">Alterar</th>
-                      <th scope="col">Apagar</th>
-                    </tr>
-                  </thead>
-                  {this.state.produtos.map(produto => (
-                    <tbody>
-                      <tr className="produto">
-                        <th scope="row">{produto.id}</th>
-                        <td>{produto.nome}</td>
-                        <td>{produto.tipo}</td>
-                        <td>{produto.estoque}</td>
-                        <td>R${produto.preco}</td>
-                        <td>
-                          <button className="editar" onClick={() => { this.update(produto); }}> <img src={require('../img/edit-24px.svg')} /></button>
-                        </td>
-                        <td>
-                          <button className="apagar" onClick={() => { this.deleta(produto.id); }}>
-                            <img src={require('../img/delete-24px.svg')} />
-                          </button>
-                        </td>
-                      </tr>
+            <div class="card-body">
 
-                    </tbody>
-                  ))}
+              <table className="table table-borderless ">
+                <thead class="thead">
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Estoque</th>
+                    <th scope="col">Preço</th>
+                    <th scope="col">Alterar</th>
+                    <th scope="col">Apagar</th>
+                  </tr>
+                </thead>
+                {/* {this.state.produtos.map(produto => (
+                  
+                  
+                  
+                ))} */}
+                {this.state.tabela}
+              </table>
+              <center> <span>{this.state.loading}</span> </center>
 
-                </table>
-              
-              <span>{this.state.loading}</span>
             </div>
-
+            
           </div >
+          <br/>
+          <nav aria-label="Navegação de página exemplo">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item"><a class="page-link" onClick={() => { this.anterPage() }}>Anterior</a></li>
+                  {this.state.botoes}
+                  <li class="page-item"><a class="page-link" onClick={() => { this.proxPage() }}>Próximo</a></li>
+                </ul>
+              </nav>
+             
+            
+
+
+
         </center>
       </div>
     );

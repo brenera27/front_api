@@ -46,8 +46,3 @@
     background-color: #FFD700	;
     border-radius: 10%;
 }
-
-#barra-rolagem{
-    overflow: auto; 
-    height: 400px;
-}

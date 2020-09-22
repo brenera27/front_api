@@ -36,7 +36,7 @@ export default class Main extends Component {
     verificaLogin = async (event) => {
         event.preventDefault();
         this.setState({ loading: <img width="36px" height="36px" src={require('../img/carregando.gif')} /> });
-        await axios.post(`https://apitestenode.herokuapp.com/api/usuarios/login`, { "email": this.state.email, "senha": this.state.senha }).then(resultado => {
+        await axios.post("https://apitestenode.herokuapp.com/api/usuarios/login", { "email": this.state.email, "senha": this.state.senha }).then(resultado => {
             const { data } = resultado;
             if (data.mensagem) {
                 this.setState({ errorMensagem: data.mensagem });

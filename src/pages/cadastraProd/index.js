@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import "./styles.css";
 
+
 export default class Main extends Component {
 
   constructor(props) {
@@ -44,11 +45,6 @@ export default class Main extends Component {
   mudaPreco(event) {
     this.setState({ preco: event.target.value });
   }
-  refreshPage() {
-    window.location.reload(false);
-  }
-
-
 
   cadastraProduct = async (event) => {
     event.preventDefault();
@@ -56,7 +52,7 @@ export default class Main extends Component {
     if (this.state.nome === "" || this.state.tipo === "" || this.state.estoque === "" || this.state.preco === "") {
       this.setState({ erro: <span className="Error">Campo obrigatório vazio</span> })
     } else {
-      this.setState({ erro:null})
+      this.setState({ erro: null })
       if (this.state.update === true) {
         //const config = { headers: { 'Content-Type': 'multipart/form-data' } };
         await axios.put("https://apitestenode.herokuapp.com/api/produtos/update", { "id": this.state.id, "nome": this.state.nome, "tipo": this.state.tipo, "estoque": this.state.estoque, "preco": this.state.preco });
@@ -77,14 +73,13 @@ export default class Main extends Component {
 
         //const config = { headers: { 'Content-Type': 'multipart/form-data' } };
       }
-      this.refreshPage();
+      window.location.reload();
     }
     this.setState({ loading: null });
 
   }
   render() {
     return (
-
       <div className="corpoImput">
         <div className="conteudo-input">
           <form onSubmit={this.cadastraProduct}>
@@ -106,7 +101,6 @@ export default class Main extends Component {
                     <option>Ferramenta</option>
                     <option>Roupa</option>
                   </select>
-
                 </div>
               </div>
             </div>
@@ -119,21 +113,20 @@ export default class Main extends Component {
                     <input type="number" className="form-control" placeholder="R$0.00" value={this.state.preco} onChange={this.mudaPreco} min="1" max="999999"></input>
                   </div>
                   <div className="col-md-6">
-
                     <label>Estoque:</label>
                     <br />
                     <input type="number" className="form-control" placeholder="0" value={this.state.estoque} onChange={this.mudaEstoque} min="1" max="999999" />
-
                   </div>
                 </div>
               </div>
             </p>
-            <span>{this.state.loading}</span>
             <hr />
             {this.state.erro}
             <br />
             <center>
               <button type="submit" className="btn btn-secondary">Salvar</button>
+              <br />
+              <span>{this.state.loading}</span>
             </center>
           </form>
         </div>
