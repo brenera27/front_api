@@ -110,7 +110,7 @@ export default class Main extends Component {
                 <div className="row">
                   <div className="col-md-6">
                     <label>Preço:</label>
-                    <input type="number" className="form-control" placeholder="R$0.00" value={this.state.preco} onChange={this.mudaPreco} min="1" max="999999"></input>
+                    <input type="number" step="0.01" className="form-control" placeholder="R$0.00" value={this.state.preco} onChange={this.mudaPreco} min="1" max="999999"></input>
                   </div>
                   <div className="col-md-6">
                     <label>Estoque:</label>
