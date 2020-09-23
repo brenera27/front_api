@@ -1,6 +1,16 @@
-.corpoTrocaSenha{
-    padding-top: 5%;
-    padding-left: 37%;
-    padding-right: 37%;
-}
 
+div.corpoTrocaS{
+    margin-top: 2%;
+    background-color: #E9ECEF;
+    width: 25%;
+    height: 500px;
+    box-shadow: 5px 5px 5px 2.5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    text-align: left; 
+}
+.conteudo-trocaS{
+    padding-top: 15%;
+    padding-left: 7%;
+    padding-right: 7%;
+   
+}

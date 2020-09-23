@@ -43,6 +43,8 @@ export default class Main extends Component {
                 if (data.mensagem == "Senha inválida") {
                     localStorage.setItem('email', this.state.email);
                     this.setState({ error: <a id="esqueci-senha" href="/verificaPalavraChave">Esqueci minha senha</a> });
+                }else{
+                    this.setState({ error: null });
                 }
             } else {
                 localStorage.setItem('app-token', data.token);
@@ -57,7 +59,7 @@ export default class Main extends Component {
         return (
             <center>
             <div className="corpoLogin">
-                <div className="jumbotron">
+                <div className="conteudo-login">
                     <center>
                         <h1 className="display-4">Login</h1>
                         <hr className="my-4"></hr>

@@ -1,10 +1,20 @@
-.corpoCadastroUser{
-    margin-top: 2%;
-    width: 900px;
-    height: 600px;
-    text-align: left;
-    
-}
+
 .possuiConta{
     font-size:14px;
+}
+
+div.corpoCadastro{
+    margin-top: 2%;
+    background-color: #E9ECEF;
+    width: 50%;
+    height: 750px;
+    box-shadow: 5px 5px 5px 2.5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    text-align: left; 
+}
+.conteudo-Cadastro{
+    padding-top: 7%;
+    padding-left: 7%;
+    padding-right: 7%;
+   
 }

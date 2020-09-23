@@ -35,8 +35,9 @@ export default class Main extends Component {
 
     render() {
         return (
-            <div className="corpoPalavraChave">
-                <div className="jumbotron">
+            <center>
+            <div className="corpoPalavraC">
+                <div className="conteudo-palavraC">
                     <form onSubmit={this.verificaPalavra}>
                         <div className="container-fluid">
                             <center>
@@ -57,6 +58,7 @@ export default class Main extends Component {
                 </div>
 
             </div>
+            </center>
         );
     }
 }

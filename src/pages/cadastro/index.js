@@ -170,8 +170,8 @@ export default class Main extends Component {
     render() {
         return (
             <center>
-            <div className="corpoCadastroUser">
-                <div className="jumbotron">
+            <div className="corpoCadastro">
+                <div className="conteudo-Cadastro">
                     <center><h1 className="display-4">Cadastro</h1></center>
                     <hr className="my-4"></hr>
                     <form onSubmit={this.cadastraUser}>

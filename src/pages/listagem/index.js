@@ -61,8 +61,11 @@ export default class Main extends Component {
     this.loadProducts();
   }
   proxPage() {
-    this.carrega(this.state.page + 1);
-    this.setState({ page: this.state.page + 1 });
+    if (this.state.qtdPag > (this.state.page + 1)) {
+      this.carrega(this.state.page + 1);
+      this.setState({ page: this.state.page + 1 });
+    }
+
 
 
   }
@@ -137,13 +140,22 @@ export default class Main extends Component {
           <div className="cadastro_prod">
             <Cadastro ref={(component) => { this.cadastro = component }} />
           </div>
-          <br /><br />
-
+          <br />
+          <br />
+          <nav aria-label="Navegação de página exemplo">
+            <ul class="pagination justify-content-center">
+              <li class="page-item"><a class="page-link" onClick={() => { this.anterPage() }}>Anterior</a></li>
+              {this.state.botoes}
+              <li class="page-item"><a class="page-link" onClick={() => { this.proxPage() }}>Próximo</a></li>
+            </ul>
+          </nav>
+          
           <div className="lista-Usuarios">
 
             <div class="card-body">
 
               <table className="table table-borderless ">
+    <caption>Página: {this.state.page+1}</caption>
                 <thead class="thead">
                   <tr>
                     <th scope="col">ID</th>
@@ -165,18 +177,12 @@ export default class Main extends Component {
               <center> <span>{this.state.loading}</span> </center>
 
             </div>
-            
+
           </div >
-          <br/>
-          <nav aria-label="Navegação de página exemplo">
-                <ul class="pagination justify-content-center">
-                  <li class="page-item"><a class="page-link" onClick={() => { this.anterPage() }}>Anterior</a></li>
-                  {this.state.botoes}
-                  <li class="page-item"><a class="page-link" onClick={() => { this.proxPage() }}>Próximo</a></li>
-                </ul>
-              </nav>
-             
-            
+          <br />
+          
+
+
 
 
 

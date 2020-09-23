@@ -36,7 +36,7 @@ export default class Main extends Component {
                     const { data } = resultado;
                     console.log(data);
                     localStorage.setItem('user', JSON.stringify(data));
-                    history.push('/app');
+                    history.push('/app/home');
                 });
 
             } else {
@@ -50,11 +50,12 @@ export default class Main extends Component {
 
     render() {
         return (
-            <div className="corpoTrocaSenha">
-                <div className="jumbotron">
-                    <center>
+            <center>
+            <div className="corpoTrocaS">
+                <div className="conteudo-trocaS">
+                    
 
-                    </center>
+                   
                     <br />
                     <form onSubmit={this.verificaPalavra}>
                         <div className="container-fluid">
@@ -64,6 +65,7 @@ export default class Main extends Component {
                             </center>
                             <label>Digite uma nova senha:</label>
                             <input type="password" className="form-control" value={this.state.senhaUm} onChange={this.mudaSenhaUm} />
+                            <br/>
                             <label>Confirme a nova senha:</label>
                             <input type="password" className="form-control" value={this.state.senhaDois} onChange={this.mudaSenhaDois} />
                             <span className="Error">{this.state.errorMensagem}</span>
@@ -80,6 +82,7 @@ export default class Main extends Component {
                 </div>
 
             </div>
+            </center>
         );
     }
 }
