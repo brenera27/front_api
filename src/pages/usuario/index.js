@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import "./styles.css";
 import Moment, { months } from "moment";
-
-
+import { Icon, Button } from 'rsuite';
 function DadosUser() {
 
     const user = JSON.parse(localStorage.getItem('user'));
@@ -13,9 +12,12 @@ function DadosUser() {
     mes++;
     const ano = aux.year();
     const dataNascimentoReal = `${dia}/${mes}/${ano}`;
-
+    if (localStorage.getItem('updateProd') == "true") {
+        localStorage.setItem('updateProd', "false");
+        localStorage.setItem('produto', null);
+    }
     function editar() {
-        localStorage.setItem('update', true);
+        localStorage.setItem('update', "true");
     }
     const { nome, email, senha, rua, palavraChave, bairro, cidade, estado, cep, complemento, numero } = user;
     return (
@@ -25,7 +27,6 @@ function DadosUser() {
                     <center>
                         <h1 className="display-4">Dados do usuário</h1>
                     </center>
-                    <br />
                     <hr className="my-4"></hr>
                     <div className="row">
                         <div className="col-md-4">
@@ -67,7 +68,10 @@ function DadosUser() {
                     </div>
                     <br />
                     <center>
-                        <a type="button" className="btn btn-secondary" onClick={editar()} href="/cadastro">Editar</a>
+                        <Button appearance="primary" onClick={editar()} href="/cadastro">
+                            <Icon icon="edit" /> Editar
+    </Button>
+
                     </center>
                 </div>
             </div>

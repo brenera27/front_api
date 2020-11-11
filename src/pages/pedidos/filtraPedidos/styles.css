@@ -1,0 +1,15 @@
+#corpo-filtro-pedidos{
+    padding-top: 20px;
+    padding-right: 30px;
+    padding-left: 30px;
+    padding-bottom: 20px;
+}
+#filtro-pedidos{
+    margin-top: 20px;
+    background-color: #E9ECEF;
+    width: 50%;
+    height: 400px;
+    box-shadow: 5px 5px 5px 2.5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    text-align: left;
+}

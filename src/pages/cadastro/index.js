@@ -42,15 +42,14 @@ export default class Main extends Component {
     componentDidMount() {
         if (localStorage.getItem('update') == "true") {
             this.cadastra();
-
         } else {
 
         }
 
     }
     cadastra = () => {
-        const aux = JSON.parse(localStorage.getItem('user'));
-        const { id, nome, email, senha, cidade, estado, bairro, rua, cep, palavraChave, complemento, numero, dataNascimento } = aux;
+        const user = JSON.parse(localStorage.getItem('user'));
+        const { id, nome, email, senha, cidade, estado, bairro, rua, cep, palavraChave, complemento, numero, dataNascimento } = user;
         this.setState({ id: id });
         this.setState({ nome: nome });
         this.setState({ email: email });
@@ -64,7 +63,7 @@ export default class Main extends Component {
         this.setState({ bairro: bairro });
         this.setState({ estado: estado });
         this.setState({ rua: rua });
-        console.log(aux);
+        console.log(user);
     }
 
 
@@ -148,7 +147,7 @@ export default class Main extends Component {
                     localStorage.setItem('user', JSON.stringify(data.user));
                     history.push('/app/usuario');
                 });
-
+                localStorage.setItem('update', "false");
             } else {
                 // const config = { headers: { 'Content-Type': 'multipart/form-data' } };
                 await axios.post("https://apitestenode.herokuapp.com/api/usuarios/novo", {

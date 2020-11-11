@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import { Icon, Navbar, Dropdown, Nav, Modal, Button, ButtonToolbar } from 'rsuite';
 import { history } from '../../history';
 
 import "./style.css";
@@ -9,46 +9,59 @@ class Menu extends React.Component {
     super();
     this.state = {
       expanded: true,
-      activeKey: '1'
+      activeKey: '1',
+      show: false
     };
-    this.handleToggle = this.handleToggle.bind(this);
-    this.handleSelect = this.handleSelect.bind(this);
+    this.close = this.close.bind(this);
+    this.open = this.open.bind(this);
   }
-  handleToggle() {
-    this.setState({
-      expanded: !this.state.expanded
-    });
+  close() {
+    this.setState({ show: false });
   }
-  handleSelect(eventKey) {
-    this.setState({
-      activeKey: eventKey
-    });
+  open() {
+    this.setState({ show: true });
   }
   sair() {
-
     localStorage.clear();
     history.push('/login');
-
-
   }
   render() {
     return (
-      <div className="menu">
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-          <a className="navbar-brand" href="/app/home">Início</a>
-          <div className="collapse navbar-collapse" id="conteudoNavbarSuportado">
-            <ul className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <a className="nav-link" href="/app/usuario">Perfil</a>
-              </li>
-            </ul>
-            <button className="btn btn-danger btn-sm " onClick={() => {
-              this.sair()
-            }}>Sair</button>
-
-          </div>
-        </nav>
-      </div>
+      <>
+        <Navbar appearance='default' id="menu">
+          <Navbar.Body>
+            <Nav>
+              <Nav.Item href="/app/home" icon={<Icon icon="home" />} >Home</Nav.Item>
+              <Nav.Item href="/app/cadastra" id="botao-menu" icon={<Icon icon="plus-circle" />}>Cadastrar</Nav.Item>
+              <Nav.Item href="/app/pedidos" id="botao-menu" icon={<Icon icon="shopping-cart" />}>Pedidos</Nav.Item>
+            </Nav>
+            <Nav pullRight>
+              <Dropdown title="Menu" icon={<Icon icon="gear-circle" />}>
+                <Dropdown.Item href="/app/usuario" icon={<Icon icon="user" />}>Perfil</Dropdown.Item>
+                  <Dropdown.Item id="sair" onClick={this.open} icon={<Icon icon="sign-out" />}>Sair</Dropdown.Item>
+              </Dropdown>
+            </Nav>
+          </Navbar.Body>
+        </Navbar>
+        <div className="modal-container">
+          <Modal backdrop="static" show={this.state.show} onHide={this.close} size={'xs'}>
+            <Modal.Header>
+              <Modal.Title>Confirmação</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <span>Tem certeza que deseja sair?</span>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={() => { this.sair() }} appearance="primary">
+                Sim
+            </Button>
+              <Button onClick={this.close} appearance="subtle">
+                Cancelar
+            </Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
+      </>
     );
   }
 

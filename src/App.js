@@ -6,7 +6,6 @@ function App() {
   return (
     <BrowserRouter>
     <Router history={history}>
-      
       <Routes />
     </Router>
     </BrowserRouter>
