@@ -1,35 +1,58 @@
-import React, { Component } from 'react';
+import React, { useState,useEffect } from 'react';
+import { useParams } from "react-router-dom";
 import "./styles.css";
 import Moment, { months } from "moment";
-import { Icon, Button } from 'rsuite';
-function DadosUser() {
+import { Loader, Icon, FlexboxGrid,IconButton } from 'rsuite';
+import Axios from 'axios';
 
-    const user = JSON.parse(localStorage.getItem('user'));
-    var aux = Moment(user.dataNascimento);
-    var dia = aux.date();
-    dia++;
-    var mes = aux.month();
-    mes++;
-    const ano = aux.year();
-    const dataNascimentoReal = `${dia}/${mes}/${ano}`;
+export default function DadosUser() {
+    const  id  =  JSON.parse(localStorage.getItem("id"))
+
+    useEffect(()=>{
+
+        buscaUser()
+        calcData()
+    },[])
+    async function buscaUser(){
+        setLoad(true)
+        await Axios.get(`https://apitestenode.herokuapp.com/api/usuarios/busca?id=${id}`).then((resposta)=>{
+            console.log(id)
+             setUser(resposta.data.usuario)
+            })
+            setLoad(false)
+    }
+    function calcData(){
+        let aux = Moment(user.dataNascimento);
+        let dia = aux.date();
+        dia++;
+        let mes = aux.month();
+        mes++;
+        const ano = aux.year();
+        setData(`${dia}/${mes}/${ano}`)
+    }
+    const [user,setUser] = useState({nome:"", email:"", senha:"", rua:"", palavraChave:"", bairro:"", cidade:"", estado:"", cep:"", complemento:"", numero:""})
+    const [dataNascimentoReal,setData] = useState(null)
+    const [loading,setLoad] = useState(false)
     if (localStorage.getItem('updateProd') == "true") {
         localStorage.setItem('updateProd', "false");
         localStorage.setItem('produto', null);
     }
     function editar() {
         localStorage.setItem('update', "true");
-    }
+    } 
     const { nome, email, senha, rua, palavraChave, bairro, cidade, estado, cep, complemento, numero } = user;
     return (
         <center>
+            
+            {user == null ? null :
             <div className="corpoDadosUser">
                 <div className="conteudo-user">
                     <center>
-                        <h1 className="display-4">Dados do usuário</h1>
+                        <h1>Dados do usuário</h1>
                     </center>
                     <hr className="my-4"></hr>
-                    <div className="row">
-                        <div className="col-md-4">
+                    <FlexboxGrid>
+                        <FlexboxGrid.Item colspan={8}>
                             <dl>
                                 <dt>Nome</dt>
                                 <dd>{nome}</dd>
@@ -42,8 +65,8 @@ function DadosUser() {
                                 <dt>Data de Nascimento</dt>
                                 <dd>{dataNascimentoReal}</dd>
                             </dl>
-                        </div>
-                        <div className="col-md-4">
+                        </FlexboxGrid.Item>
+                        <FlexboxGrid.Item colspan={8}>
                             <dl>
                                 <dt>CEP</dt>
                                 <dd>{cep}</dd>
@@ -56,31 +79,30 @@ function DadosUser() {
                                 <dt>Rua</dt>
                                 <dd>{rua}</dd>
                             </dl>
-                        </div>
-                        <div className="col-md-4">
+                        </FlexboxGrid.Item>
+                        <FlexboxGrid.Item colspan={8}>
                             <dl>
                                 <dt>Número</dt>
                                 <dd>{numero}</dd>
                                 <dt>Complemento</dt>
                                 <dd>{complemento}</dd>
                             </dl>
-                        </div>
-                    </div>
+                        </FlexboxGrid.Item>
+                    </FlexboxGrid>
+
                     <br />
                     <center>
-                        <Button appearance="primary" onClick={editar()} href="/cadastro">
-                            <Icon icon="edit" /> Editar
-    </Button>
+    <IconButton appearance="primary" onClick={editar()} href="/cadastro" icon={<Icon icon="edit" />}> Editar </IconButton>
 
                     </center>
                 </div>
             </div>
+}{loading == true ? <Loader backdrop content="Carregando..." center vertical /> : null}
         </center>
     );
 
 }
 
-export default DadosUser
 
 
 

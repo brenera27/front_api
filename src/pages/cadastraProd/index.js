@@ -1,169 +1,137 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "./styles.css";
-import { Button, Alert } from 'rsuite';
+import { Button, Form, FlexboxGrid, FormControl, SelectPicker, ControlLabel, FormGroup, Schema, Loader, Alert } from 'rsuite';
+
+export default function App() {
+
+  const { StringType, NumberType } = Schema.Types;
+  const model = Schema.Model({
+    nome: StringType().isRequired('Campo Obrigatório.'),
+    preco: NumberType().isRequired('Campo Obrigatório.'),
+    estoque: NumberType().isRequired('Campo Obrigatório.'),
+    estoqueMin: NumberType().isRequired('Campo Obrigatório.'),
+  });
+
+  const [produto, setProduto] = useState({ id: "", nome: "", tipo: "", preco: "", estoque: "", estoqueMin: "" })
+  const [loading, setLoad] = useState(false)
 
 
-export default class Main extends Component {
+  async function salvar() {
+    console.log(produto)
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      update: false,
-      id: "",
-      nome: "",
-      tipo: "",
-      estoque: "",
-      preco: "",
-      estoqueMin: "",
-      loading: null,
-      erro: null
+    const { nome, preco, estoque, estoqueMin, tipo } = produto
+    if (nome != "" && preco != "" && estoque != "" && estoqueMin != "" && tipo != null) {
+      setLoad(true)
+      console.log(produto)
+      await axios.post("https://apitestenode.herokuapp.com/api/produtos/novo", { "nome": produto.nome, "tipo": produto.tipo, "preco": produto.preco, "estoque": produto.estoque, "estoqueMin": produto.estoqueMin }).then(() => {
+        Alert.success('Cadastrado com Sucesso.')
+        window.location.reload(false);
+      }).catch((error) => {
+        Alert.error("" + error)
+      });
 
-    };
-    this.cadastraProduct = this.cadastraProduct.bind(this);
-    this.mudaNome = this.mudaNome.bind(this);
-    this.mudaTipo = this.mudaTipo.bind(this);
-    this.mudaEstoque = this.mudaEstoque.bind(this);
-    this.mudaPreco = this.mudaPreco.bind(this);
-    this.mudaEstMin = this.mudaEstMin.bind(this);
-  }
-
-  componentDidMount() {
-    if (localStorage.getItem('updateProd') == "true") {
-      this.updateProd();
     }
+    setLoad(false)
   }
-  updateProd = () => {
-    const prod = JSON.parse(localStorage.getItem('produto'));
-    if (prod !== null) {
-      const { nome, tipo, estoque, estoqueMin, preco, id } = prod;
-      this.setState({ nome: nome });
-      this.setState({ tipo: tipo });
-      this.setState({ estoque: estoque });
-      this.setState({ estoqueMin: estoqueMin });
-      this.setState({ preco: preco });
-      this.setState({ id: id });
-      this.setState({ update: true });
-      console.log(prod);
+  const tipos = [
+    {
+      "label": "Alimento",
+      "value": "alimento",
+      "role": "Tipo"
+    },
+    {
+      "label": "Bebida",
+      "value": "bebida",
+      "role": "Tipo"
+    },
+    {
+      "label": "Brinquedo",
+      "value": "brinquedo",
+      "role": "Tipo"
+    },
+    {
+      "label": "Ferramenta",
+      "value": "ferramenta",
+      "role": "Tipo"
+    },
+    {
+      "label": "Roupa",
+      "value": "roupa",
+      "role": "Tipo"
     }
 
+  ]
+  function setaValores(valor) {
+    const { nome, tipo, id, estoque, estoqueMin, preco } = valor;
+    if (nome == undefined) { valor.nome = produto.nome }
+    if (tipo == undefined) { valor.tipo = produto.tipo }
+    if (preco == undefined) { valor.preco = produto.preco }
+    if (estoque == undefined) { valor.estoque = produto.estoque }
+    if (estoqueMin == undefined) { valor.estoqueMin = produto.estoqueMin }
+    valor.id = produto.id
+    setProduto(valor)
   }
-  mudaNome(event) {
-    this.setState({ nome: event.target.value });
-  }
-  mudaTipo(event) {
-    this.setState({ tipo: event.target.value });
-  }
-  mudaEstoque(event) {
-    this.setState({ estoque: event.target.value });
-  }
-  mudaEstMin(event) {
-    this.setState({ estoqueMin: event.target.value });
-  }
-  mudaPreco(event) {
-    this.setState({ preco: event.target.value });
+  async function mudaTipo(escolha) {
+    console.log(produto.tipo)
+    const prod = produto
+    prod.tipo = escolha
+    await setProduto(prod)
+    console.log(produto)
   }
 
-  cadastraProduct = async (event) => {
-    event.preventDefault();
-    const { id, nome, tipo, estoque, estoqueMin, preco } = this.state
-    this.setState({ loading: <img width="36px" height="36px" src={require('../img/carregando.gif')} /> });
-    if (nome === "" || tipo === "" || estoque === "" || preco === "") {
-      Alert.error('Campo Obrigatório vazio.')
-    } else {
-      this.setState({ erro: null })
-      if (this.state.update === true) {
-        //const config = { headers: { 'Content-Type': 'multipart/form-data' } };
-        await axios.put("http://apitestenode.herokuapp.com/api/produtos/update", { "id": id, "nome": nome, "tipo": tipo, "estoque": estoque,"estoqueMin":estoqueMin, "preco": preco });
-        this.setState({ update: false });
-        localStorage.setItem('updateProd', "false");
-        localStorage.setItem('produto', null);
-      } else {
-        try {
-          await axios.post("https://apitestenode.herokuapp.com/api/produtos/novo", { "nome": nome, "tipo": tipo, "estoque": estoque,"estoqueMin":estoqueMin, "preco": preco }).then(resultado => {
-          }).catch((error) => {
-            alert(error);
-          });
-        }
-        catch (err) {
-          console.error(err);
+  return (
+    <>
 
-        }
-
-        //const config = { headers: { 'Content-Type': 'multipart/form-data' } };
-      }
-      window.location.reload();
-    }
-    this.setState({ loading: null });
-
-  }
-  render() {
-    const { id, nome, tipo, estoque,estoqueMin, preco } = this.state
-    return (
       <center>
         <div className="corpoImput">
           <div className="conteudo-input">
             <center>
-              <h1 class="display-4">Cadastrar Produtos</h1>
+              <h2>Cadastrar Produtos</h2>
             </center>
             <hr className="my-4"></hr>
-            <form onSubmit={this.cadastraProduct}>
-              <div className="container-fluid">
-                <div className="row">
-                  <div className="col-md-6">
-                    <label>Nome:</label>
-                    <input type="name" className="form-control" placeholder="Nome do produto" value={nome} onChange={this.mudaNome} maxlength="40" />
-                  </div>
-                  <div className="col-md-6">
-                    <label>Tipo:</label>
-                    <br />
-                    <select className="btn btn-secondary btn-block" value={tipo} onChange={this.mudaTipo} >
-                      <option selected value="">Selecione</option>
-                      <option>Alimento</option>
-                      <option>Higiene Pessoal</option>
-                      <option>Bebida</option>
-                      <option>Brinquedo</option>
-                      <option>Ferramenta</option>
-                      <option>Roupa</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <p>
-                <br />
-                <div className="container-fluid">
-                  <div className="row">
-                    <div className="col-md-4">
-                      <label>Preço:</label>
-                      <input type="number" step="0.01" className="form-control" placeholder="R$0.00" value={preco} onChange={this.mudaPreco} min="1" max="999999"></input>
-                    </div>
-                    <div className="col-md-4">
-                      <label>Estoque:</label>
-                      <br />
-                      <input type="number" className="form-control" placeholder="0" value={estoque} onChange={this.mudaEstoque} min="1" max="999999" />
-                    </div>
-                    <div className="col-md-4">
-                      <label>Estoque Mínimo:</label>
-                      <br />
-                      <input type="number" className="form-control" placeholder="0" value={estoqueMin} onChange={this.mudaEstMin} min="1" max="999999" />
-                    </div>
-                  </div>
-                </div>
-              </p>
-              <hr />
-              {this.state.erro}
-              <br />
-              <center>
-                <button type="submit" className="btn btn-secondary">Salvar</button>
-                <br /><br />
-                <span>{this.state.loading}</span>
-              </center>
-            </form>
+            <FlexboxGrid justify="center">
+              <Form onChange={(valor) => setaValores(valor)} model={model} onSubmit={() => salvar()}>
+
+                <FormGroup>
+                  <ControlLabel>Nome</ControlLabel>
+                  <FormControl name="nome" value={produto.nome} />
+                </FormGroup>
+
+                <FormGroup>
+                  <ControlLabel>Tipo</ControlLabel>
+                  <SelectPicker data={tipos} defaultValue={produto.tipo} onChange={mudaTipo} style={{ width: 224 }} />
+                </FormGroup>
+
+                <FormGroup>
+                  <ControlLabel>Preço</ControlLabel>
+                  <FormControl name="preco" value={produto.preco} type="number" step="0.01" />
+                </FormGroup>
+
+                <FormGroup>
+                  <ControlLabel>Estoque</ControlLabel>
+                  <FormControl name="estoque" type="number" value={produto.estoque} />
+                </FormGroup>
+
+                <FormGroup>
+                  <ControlLabel>Estoque Mínimo</ControlLabel>
+                  <FormControl name="estoqueMin" type="number" value={produto.estoqueMin} />
+                </FormGroup>
+                <center>
+                  <Button appearance="primary" type="submit">Salvar</Button>
+                </center>
+
+              </Form>
+
+            </FlexboxGrid>
           </div>
         </div>
+
       </center>
-    );
-  }
+
+      {loading == true ? <Loader backdrop content="Carregando..." vertical /> : null}
+    </>
+  )
 
 }
 

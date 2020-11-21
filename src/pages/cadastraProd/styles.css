@@ -1,9 +1,10 @@
 div.corpoImput{
+    align-items: center;
     margin-top: 20px;
     background-color: #E9ECEF;
-    width: 55%;
-    height: 470px;
-    box-shadow: 5px 5px 5px 2.5px rgba(0, 0, 0, 0.2);
+    width: 25%;
+    height: 600px;
+
     border-radius: 10px;
     text-align: left;
 }

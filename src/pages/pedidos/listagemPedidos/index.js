@@ -5,10 +5,10 @@ import 'rsuite/dist/styles/rsuite-default.css';
 import 'rsuite/lib/styles/index.less';
 import "./styles.css"
 import { Table } from 'rsuite';
+
 const styles = {
     marginBottom: 10
 };
-
 const CustomInput = ({ ...props }) => <Input {...props} style={styles} />;
 const { Column, HeaderCell, Cell, Pagination } = Table;
 
@@ -23,13 +23,12 @@ export default class Main extends Component {
             produtos: [],
             total: null,
             page: 1,
-            idProd: null,
             show: false,
-            nome: 'teste',
-            todosProd: null,
-            sugestoes: null
+            nome: null,
+            todosProd: [],
+            sugestoes: null,
+            idProd : {id:null}
         };
-        this.mudaQtd = this.mudaQtd.bind(this);
         this.close = this.close.bind(this);
         this.open = this.open.bind(this);
         this.setNome = this.setNome.bind(this);
@@ -38,25 +37,6 @@ export default class Main extends Component {
         this.handleChangeLength = this.handleChangeLength.bind(this);
     }
 
-    mudaQtd(value) {
-        const prod = this.state.produtos
-        prod[this.state.idProd].qtdComprar = value
-        this.setState({ produtos: prod });
-    }
-    selecionaProd = async (id) => {
-        await this.setState({ idProd: id - 1 });
-    }
-    deleta = (id) => {
-        const prod = this.state.produtos
-        for (let i = 0; i < prod.length; i++) {
-            if (prod[i].id == id) {
-                prod.splice(i, 1);
-            }
-        }
-        this.setState({ produtos: prod });
-        this.carrega()
-        this.calcTotalPages()
-    }
     componentDidMount() {
         this.loadProducts()
     }
@@ -64,22 +44,21 @@ export default class Main extends Component {
     loadProducts = async () => {
         this.setState({ loading: true })
         const filtros = this.props.filtros
-        console.log(filtros)
-        await axios.post("http://localhost:3000/api/produtos-filtrados", { filtros }).then(resposta => {
+        // Busca com filtros
+        await axios.post("https://apitestenode.herokuapp.com/api/produtos-filtrados", { filtros }).then(resposta => {
             let resultado = resposta.data.produtos
             resultado.map((produto) => {
-                return produto.qtdComprar = null
+                produto.qtdComprar = null
             })
             this.setState({ produtos: resultado })
-        });
-        // await axios.get("http://localhost:3000/api/produtos").then(resposta => {
-        //     resultado = resposta.data.produtos
-        //     resultado.map((produto)=>{
-        //         return produto.qtdComprar = null
-        //     })
-        //     console.log(resultado)
-        // });
-        await axios.get("http://localhost:3000/api/produtos").then(resposta => {
+        }).catch(error => {
+            Alert.error(""+error)
+            //console.error('Error during service worker registration:', error);
+            this.setState({loading:false})
+          });
+
+        // Busca para salvar os nomes e usar o imput autoComplete e para validar se existe quadno o usuário for acrescentar outro produto
+        await axios.get("https://apitestenode.herokuapp.com/api/produtos").then(resposta => {
             this.setState({ todosProd: resposta.data.produtos })
             let sugestoes = resposta.data.produtos.map((produto) => {
                 return produto.nome
@@ -89,31 +68,21 @@ export default class Main extends Component {
 
         this.setState({ loading: false })
     }
+
+    // abrir e fechar modal de novo produto
     close() {
         this.setState({ show: false });
     }
     open() {
         this.setState({ show: true });
     }
+
+    // nome do novo produto do autoComplete
     setNome(value) {
         this.setState({ nome: value });
     }
-    novoProd(nome) {
-        let add = false
-        let mensagem = ''
-        let { produtos, todosProd } = this.state
-        todosProd.map((prod) => {
-            if (prod.nome == nome) {
-                produtos.map((produto) => {
-                    if (prod.id == produto.id) {
-                        Alert.success('Adicionado com sucesso.')
-                    }
-                })
 
-            }
-        })
-        Alert.error('Produto não encontrado.')
-    }
+    // proxima página e página anterior
     handleChangePage(dataKey) {
         this.setState({
             page: dataKey
@@ -125,6 +94,8 @@ export default class Main extends Component {
             displayLength: dataKey
         });
     }
+
+    // pegando os produtos que vao ser listados
     getData() {
         const { displayLength, page, produtos } = this.state;
 
@@ -134,25 +105,23 @@ export default class Main extends Component {
             return i >= start && i < end;
         });
     }
-    setId = (id) => {
-        console.log(this.state.idProd)
-        this.teste(id)
+
+    // salvando o ID do produto esta sendo editado
+    setId = async (id) => {
+        const {idProd} = this.state
+        idProd.id = id
     }
-    teste = async (id) => {
-        await this.setState({ idProd: id })
-    }
+
+    // setando a quantidade a comprar do produto com id salvo
     setValor = (value) => {
         const { produtos, idProd } = this.state
-
         produtos.map((produto) => {
-            if (produto.id == idProd) {
+            if (produto.id == idProd.id) {
                 produto.qtdComprar = value
             }
         })
-        //this.setState({produtos:produtos})
-        console.log(this.state.produtos)
-
     }
+
     exclui = (id) => {
         const {produtos} = this.state
         for(let i = 0; i<produtos.length; i++){
@@ -164,33 +133,52 @@ export default class Main extends Component {
             }
         }
     }
+
     adicionaProd = () => {
         const { todosProd, nome, produtos } = this.state
         let contem = false
         let feito = false
-        for(let i = 0; i<todosProd.length;i++){
-            if (todosProd[i].nome == nome) {
-                produtos.map((filtrado) => {
-                    if(filtrado.id == todosProd[i].id){
-                        Alert.error('Produto ja adicionado a sacola.')
-                        contem = true
+        if(todosProd.length > 0){
+            for(let i = 0; i<todosProd.length;i++){
+                if (todosProd[i].nome == nome) {
+                    produtos.map((filtrado) => {
+                        if(filtrado.id == todosProd[i].id){
+                            Alert.error('Produto ja adicionado a sacola.')
+                            contem = true
+                            feito = true
+                        }
+                    })
+                    if(contem == false){
+                        produtos.push(todosProd[i])
                         feito = true
+                        Alert.success('Adicionado com sucesso.')
+                        this.close()
                     }
-                })
-                if(contem == false){
-                    produtos.push(todosProd[i])
-                    feito = true
-                    Alert.success('Adicionado com sucesso.')
-                    this.close()
                 }
             }
-        }
-        if(feito == false){
-            Alert.error('Produto não encontrado.')
-        }else{
-            this.setState({produtos:produtos})
+            if(feito == false){
+                Alert.error('Produto não encontrado.')
+            }else{
+                this.setState({produtos:produtos})
+            }
+        }      
+    }
+
+    // Envia os produtos selecionados para a proxima pagina de listagem
+    finalizar = () => {
+        const {produtos} = this.state
+        let nulo = false
+        produtos.map((produto)=>{
+            if(produto.qtdComprar == null){
+                nulo = true
+                Alert.error('Produto com campo Quantidade vazio.')
+            }
+        })
+        if(nulo === false){
+            this.props.finalizar(this.state.produtos)
         }
     }
+    
     render() {
         const data = this.getData();
         const { loading, displayLength, page } = this.state;
@@ -204,8 +192,8 @@ export default class Main extends Component {
                 );
             } else {
                 return (
-                    <Cell {...props} className="link-group" className='coluna-pedidos'>
-                        <CustomInput value={rowData.qtdComprar} size="xs" type="number" onClick={() => { this.setId(rowData[dataKey]) }} onChange={this.setValor} />
+                    <Cell {...props}  className='coluna-pedidos'>
+                        <CustomInput value={rowData.qtdComprar} size="xs" type="number" onChange={this.setValor} onSelect={() => { this.setId(rowData[dataKey]) }}  />
                     </Cell>
                 );
             }
@@ -239,7 +227,7 @@ export default class Main extends Component {
                             <HeaderCell>Estoque Min.</HeaderCell>
                             <Cell dataKey="estoqueMin" />
                         </Column>
-                        <Column width={130} fixed className='coluna-pedidos'>
+                        <Column width={100} fixed className='coluna-pedidos'>
                             <HeaderCell>Quantidade</HeaderCell>
                             <ActionCell dataKey={'id'} />
                         </Column>
@@ -256,7 +244,7 @@ export default class Main extends Component {
                         onChangePage={this.handleChangePage}
                         onChangeLength={this.handleChangeLength}
                     />
-                    <IconButton icon={<Icon icon="plus" />} size="xs" color="blue" onClick={this.open} circle/>
+                    
                     <div>
                         <Modal show={this.state.show} onHide={this.close} size="xs">
                             <Modal.Header>
@@ -275,9 +263,9 @@ export default class Main extends Component {
                     </div>
                 </div>
                 <center>
-                    <Button appearance="primary" onClick={() => { this.props.comprar(this.state.produtos) }}>Finalizar</Button>
+                    <Button appearance="primary" onClick={() => { this.finalizar() }}>Finalizar</Button>
                 </center>
-                <br />
+                <IconButton icon={<Icon icon="plus" />} size="xs" color="cyan" onClick={this.open} />
             </div>
         );
     }
