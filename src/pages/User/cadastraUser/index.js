@@ -17,7 +17,7 @@ export default function App() {
         setLoad(true)
         const { nome, email, senha, palavraChave, dataNascimento } = pessoa;
         if (nome != "" && email != "" && senha != "" && palavraChave != "" && dataNascimento != "") {
-            await axios.post("http://localhost:3000/api/usuarios/novo", { pessoa }).then(response => {
+            await axios.post("https://apitestenode.herokuapp.com/api/usuarios/novo", { pessoa }).then(response => {
                 if (response.data) {
                     history.push('/login');
                 }

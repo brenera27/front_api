@@ -31,7 +31,7 @@ export default function App() {
         setLoad(true)
         const { nome, email, senha, palavraChave, dataNascimento } = pessoa
         if (nome != "" && email != "" && senha != "" && palavraChave != "" && dataNascimento != "") {
-            await axios.put("http://localhost:3000/api/usuarios/update", { pessoa }).then(response => {
+            await axios.put("https://apitestenode.herokuapp.com/api/usuarios/update", { pessoa }).then(response => {
                 if (response) {
                     history.replace('/app/usuario')
                     console.log(response)

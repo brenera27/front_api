@@ -13,7 +13,7 @@ export default function App() {
     if (nome != "" && preco != "" && estoque != "" && estoqueMin != "" && tipo != null) {
       setLoad(true)
       console.log(produto)
-      await axios.post("http://localhost:3000/api/produtos/novo", { produto }).then(() => {
+      await axios.post("https://apitestenode.herokuapp.com/api/produtos/novo", { produto }).then(() => {
         Alert.success('Cadastrado com Sucesso.')
         window.location.reload(false);
       }).catch((error) => {

@@ -115,7 +115,7 @@ export default function App(props) {
         const contem = produtos.some(produto => {
             return produto.nome == nome
         })
-        contem == false ? await axios.get(`http://localhost:3000/api/busca-nome?nome=${nome}`).then((resultado) => {
+        contem == false ? await axios.get(`https://apitestenode.herokuapp.com/busca-nome?nome=${nome}`).then((resultado) => {
             resultado.data.produto ? produtos.push(resultado.data.produto) : Alert.error("" + resultado.data)
             setShow(false)
         }) : Alert.warning("Produto ja adicionado a sacola")
