@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import axios from 'axios'
 import "./styles.css"
 import { history } from '../../history'
 import { Alert, Button, Form, ControlLabel, FormGroup, Schema, FormControl, Loader, FlexboxGrid } from 'rsuite'
 
 export default function App() {
+
     const { StringType } = Schema.Types
     const model = Schema.Model({
-        email: StringType().isEmail('Email inválido').isRequired('Email obrigatório'),
-        senha: StringType().isRequired('Senha Obrigatória.')
+        email: StringType().isEmail('Email inválido').isRequired('Campo obrigatório'),
+        senha: StringType().isRequired('Campo Obrigatória.')
     });
 
     const [usuario, setUsuario] = useState({ email: "", senha: "" })

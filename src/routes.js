@@ -1,15 +1,15 @@
-import React,{useState} from "react";
-import TelaLogin from "./pages/autenticador";
-import TelaCadastro from "./pages/cadastro";
+import React,{useEffect} from "react";
+import TelaLogin from "./pages/login";
+import TelaCadastro from "./pages/User/cadastraUser";
 import PrivateRoute from './PrivateRoute';
 import TrocaSenha from './pages/trocaSenha';
 import TelaPalavraChave from './pages/verificaPalavra';
 import { Route, Switch } from "react-router-dom";
 import App from "./pages/App.js";
 
+
 export default function Routes() {
-
-
+   
     return (
         
             <Switch>

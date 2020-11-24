@@ -19,7 +19,7 @@ export default function App() {
         <Navbar.Body>
           <Nav onSelect={onSelect} activeKey={activeKey}>
             <Nav.Item onClick={() => history.replace('/app/home')} icon={<Icon icon="home" />} >Home</Nav.Item>
-            <Nav.Item onClick={() => history.replace('/app/cadastra')} id="botao-menu" icon={<Icon icon="plus-circle" />}>Cadastrar</Nav.Item>
+            <Nav.Item onClick={() => history.replace('/app/cadastraProd')} id="botao-menu" icon={<Icon icon="plus-circle" />}>Cadastrar</Nav.Item>
             <Nav.Item onClick={() => history.replace('/app/pedidos')} id="botao-menu" icon={<Icon icon="shopping-cart" />}>Pedidos</Nav.Item>
           </Nav>
           <Nav pullRight>

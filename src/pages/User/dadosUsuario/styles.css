@@ -1,0 +1,16 @@
+.corpoDadosUser{
+    margin-top: 20px;
+    width: 50%;
+    height: 500px;
+    text-align: left;
+    margin-left: 2%;
+    margin-right: 2%;
+    background-color: #E9ECEF;
+    border-radius: 10px;
+}
+.conteudo-user{
+  padding-top: 50px;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+

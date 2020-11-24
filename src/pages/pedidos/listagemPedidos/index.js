@@ -1,274 +1,227 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Button, Modal, Icon, ControlLabel, Input, AutoComplete, IconButton, Alert } from 'rsuite';
-import 'rsuite/dist/styles/rsuite-default.css';
-import 'rsuite/lib/styles/index.less';
 import "./styles.css"
 import { Table } from 'rsuite';
 
 const styles = {
     marginBottom: 10
 };
+
 const CustomInput = ({ ...props }) => <Input {...props} style={styles} />;
 const { Column, HeaderCell, Cell, Pagination } = Table;
 
-export default class Main extends Component {
+export default function App(props) {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            displayLength: 10,
-            loading: false,
-            page: 1,
-            produtos: [],
-            total: null,
-            page: 1,
-            show: false,
-            nome: null,
-            todosProd: [],
-            sugestoes: null,
-            idProd : {id:null}
-        };
-        this.close = this.close.bind(this);
-        this.open = this.open.bind(this);
-        this.setNome = this.setNome.bind(this);
-        this.handleChangePage = this.handleChangePage.bind(this);
-        this.setValor = this.setValor.bind(this);
-        this.handleChangeLength = this.handleChangeLength.bind(this);
-    }
 
-    componentDidMount() {
-        this.loadProducts()
-    }
+    let [idProd, setIdProd] = useState(null)
+    const [displayLength, setDisplayLength] = useState(10)
+    const [page, setPage] = useState(1)
+    const [nome, setNome] = useState("")
+    const [nomesProd, setNomesProd] = useState([])
+    const [produtos, setProdutos] = useState([])
+    const [loading, setLoad] = useState(false)
+    const [show, setShow] = useState(false)
+    const [data, setData] = useState()
 
-    loadProducts = async () => {
-        this.setState({ loading: true })
-        const filtros = this.props.filtros
-        // Busca com filtros
-        await axios.post("https://apitestenode.herokuapp.com/api/produtos-filtrados", { filtros }).then(resposta => {
+    useEffect(() => {
+
+        loadProducts()
+
+    }, [])
+
+    useEffect(() => {
+
+        setData(getData())
+        console.log(data)
+
+    }, [produtos])
+
+    async function loadProducts() {
+        setLoad(true)
+        const filtros = props.filtros
+        // Busca pordutos com filtros
+        await axios.post("https://apitestenode.herokuapp.com/api/produtos-filtrados", { filtros }).then(async resposta => {
             let resultado = resposta.data.produtos
             resultado.map((produto) => {
                 produto.qtdComprar = null
             })
-            this.setState({ produtos: resultado })
-        }).catch(error => {
-            Alert.error(""+error)
-            //console.error('Error during service worker registration:', error);
-            this.setState({loading:false})
-          });
+            setProdutos(resultado)
 
-        // Busca para salvar os nomes e usar o imput autoComplete e para validar se existe quadno o usuário for acrescentar outro produto
-        await axios.get("https://apitestenode.herokuapp.com/api/produtos").then(resposta => {
-            this.setState({ todosProd: resposta.data.produtos })
-            let sugestoes = resposta.data.produtos.map((produto) => {
-                return produto.nome
-            })
-            this.setState({ sugestoes: sugestoes })
+        }).catch(error => {
+            Alert.error("" + error)
         });
 
-        this.setState({ loading: false })
+        // Busca todos os produtos para salvar os nomes e usar o imput autoComplete
+        await axios.get("https://apitestenode.herokuapp.com/api/produtos").then(resposta => {
+            let nomes = resposta.data.produtos.map((produto) => {
+                return produto.nome
+            })
+            setNomesProd(nomes)
+        });
+
+        setLoad(false)
     }
 
     // abrir e fechar modal de novo produto
-    close() {
-        this.setState({ show: false });
+    function close() {
+        setShow(false)
     }
-    open() {
-        this.setState({ show: true });
-    }
-
-    // nome do novo produto do autoComplete
-    setNome(value) {
-        this.setState({ nome: value });
+    function open() {
+        setShow(true)
     }
 
     // proxima página e página anterior
-    handleChangePage(dataKey) {
-        this.setState({
-            page: dataKey
-        });
+    function handleChangePage(dataKey) {
+        setPage(dataKey)
     }
-    handleChangeLength(dataKey) {
-        this.setState({
-            page: 1,
-            displayLength: dataKey
-        });
+    function handleChangeLength(dataKey) {
+        setPage(1)
     }
 
     // pegando os produtos que vao ser listados
-    getData() {
-        const { displayLength, page, produtos } = this.state;
-
+    function getData() {
         return produtos.filter((v, i) => {
             const start = displayLength * (page - 1);
             const end = start + displayLength;
             return i >= start && i < end;
-        });
-    }
-
-    // salvando o ID do produto esta sendo editado
-    setId = async (id) => {
-        const {idProd} = this.state
-        idProd.id = id
+        })
     }
 
     // setando a quantidade a comprar do produto com id salvo
-    setValor = (value) => {
-        const { produtos, idProd } = this.state
+    function setValor(value) {
         produtos.map((produto) => {
-            if (produto.id == idProd.id) {
+            if (produto.id == idProd) {
                 produto.qtdComprar = value
             }
         })
     }
 
-    exclui = (id) => {
-        const {produtos} = this.state
-        for(let i = 0; i<produtos.length; i++){
-            if(produtos[i].id == id){
-                produtos.splice(i,1);
-                this.setState({produtos:produtos})
-                i=produtos.length
+    function exclui(id) {
+        for (let i = 0; i < produtos.length; i++) {
+            if (produtos[i].id == id) {
+                produtos.splice(i, 1);
+                const aux = produtos
+                setProdutos(aux)
+                console.log(produtos)
+                i = produtos.length
                 Alert.success('Removido com sucesso.')
             }
         }
     }
 
-    adicionaProd = () => {
-        const { todosProd, nome, produtos } = this.state
-        let contem = false
-        let feito = false
-        if(todosProd.length > 0){
-            for(let i = 0; i<todosProd.length;i++){
-                if (todosProd[i].nome == nome) {
-                    produtos.map((filtrado) => {
-                        if(filtrado.id == todosProd[i].id){
-                            Alert.error('Produto ja adicionado a sacola.')
-                            contem = true
-                            feito = true
-                        }
-                    })
-                    if(contem == false){
-                        produtos.push(todosProd[i])
-                        feito = true
-                        Alert.success('Adicionado com sucesso.')
-                        this.close()
-                    }
-                }
-            }
-            if(feito == false){
-                Alert.error('Produto não encontrado.')
-            }else{
-                this.setState({produtos:produtos})
-            }
-        }      
+    async function adicionaProd() {
+        setLoad(true)
+        const contem = produtos.some(produto => {
+            return produto.nome == nome
+        })
+        contem == false ? await axios.get(`http://localhost:3000/api/busca-nome?nome=${nome}`).then((resultado) => {
+            resultado.data.produto ? produtos.push(resultado.data.produto) : Alert.error("" + resultado.data)
+            setShow(false)
+        }) : Alert.warning("Produto ja adicionado a sacola")
+        setLoad(false)
     }
 
     // Envia os produtos selecionados para a proxima pagina de listagem
-    finalizar = () => {
-        const {produtos} = this.state
+    function finalizar() {
         let nulo = false
-        produtos.map((produto)=>{
-            if(produto.qtdComprar == null){
+        produtos.map((produto) => {
+            if (produto.qtdComprar == null) {
                 nulo = true
                 Alert.error('Produto com campo Quantidade vazio.')
             }
         })
-        if(nulo === false){
-            this.props.finalizar(this.state.produtos)
+        if (nulo === false) {
+            props.finalizar(produtos)
         }
     }
-    
-    render() {
-        const data = this.getData();
-        const { loading, displayLength, page } = this.state;
 
-        const ActionCell = ({ value, rowData, dataKey, ...props }) => {
-            if (props.botao == true) {
-                return (
-                    <Cell {...props} className="link-group" className='coluna-pedidos'>
-                        <Icon icon="minus-square" size="lg" style={{ color: '#f44336', cursor: 'pointer' }} onClick={() => { this.exclui(rowData[dataKey]) }} />
-                    </Cell>
-                );
-            } else {
-                return (
-                    <Cell {...props}  className='coluna-pedidos'>
-                        <CustomInput value={rowData.qtdComprar} size="xs" type="number" onChange={this.setValor} onSelect={() => { this.setId(rowData[dataKey]) }}  />
-                    </Cell>
-                );
-            }
-        };
-        return (
-            <div id="tabela-pedidos">
-                <br />
-                <center>
-                    <h3>Produtos Filtrados</h3>
-                </center>
-                <hr className="my-4"></hr>
+    const ActionCell = ({ value, rowData, dataKey, ...props }) => {
+        if (props.botao == true) {
+            return (
+                <Cell {...props} className="link-group" className='coluna-pedidos'>
+                    <Icon icon="minus-square" size="lg" style={{ color: '#f44336', cursor: 'pointer' }} onClick={() => { exclui(rowData[dataKey]) }} />
+                </Cell>
+            );
+        } else {
+            return (
+                <Cell {...props} className='coluna-pedidos'>
+                    <CustomInput value={rowData.qtdComprar} size="xs" type="number" onChange={setValor} onSelect={() => { idProd = rowData[dataKey] }} />
+                </Cell>
+            );
+        }
+    };
+
+    return (
+        <div id="tabela-pedidos">
+            <center>
+                <h3>Produtos Filtrados</h3>
+            </center>
+            <hr className="my-4"></hr>
+            <div>
+                <Table autoHeight AutoComplete data={data} loading={loading} className='tabela-pedidos'>
+                    <Column width={50} align="center" fixed className='coluna-pedidos'>
+                        <HeaderCell>Id</HeaderCell>
+                        <Cell dataKey="id" />
+                    </Column>
+                    <Column width={200} fixed className='coluna-pedidos'>
+                        <HeaderCell>Nome</HeaderCell>
+                        <Cell dataKey="nome" />
+                    </Column>
+                    <Column width={100} fixed className='coluna-pedidos'>
+                        <HeaderCell>Tipo</HeaderCell>
+                        <Cell dataKey="tipo" />
+                    </Column>
+                    <Column width={100} fixed className='coluna-pedidos'>
+                        <HeaderCell>Estoque</HeaderCell>
+                        <Cell dataKey="estoque" />
+                    </Column>
+                    <Column width={100} fixed className='coluna-pedidos'>
+                        <HeaderCell>Estoque Min.</HeaderCell>
+                        <Cell dataKey="estoqueMin" />
+                    </Column>
+                    <Column width={100} fixed className='coluna-pedidos'>
+                        <HeaderCell>Quantidade</HeaderCell>
+                        <ActionCell dataKey={'id'} />
+                    </Column>
+                    <Column width={70} fixed className='coluna-pedidos'>
+                        <HeaderCell>Excluir</HeaderCell>
+                        <ActionCell dataKey={'id'} botao={true} />
+                    </Column>
+                </Table>
+                <Pagination
+                    showLengthMenu={false}
+                    activePage={page}
+                    displayLength={10}
+                    total={produtos.length}
+                    onChangePage={handleChangePage}
+                    onChangeLength={handleChangeLength}
+                />
+
                 <div>
-                    <Table autoHeight AutoComplete data={data} loading={loading} className='tabela-pedidos'>
-                        <Column width={50} align="center" fixed className='coluna-pedidos'>
-                            <HeaderCell>Id</HeaderCell>
-                            <Cell dataKey="id" />
-                        </Column>
-                        <Column width={200} fixed className='coluna-pedidos'>
-                            <HeaderCell>Nome</HeaderCell>
-                            <Cell dataKey="nome" />
-                        </Column>
-                        <Column width={100} fixed className='coluna-pedidos'>
-                            <HeaderCell>Tipo</HeaderCell>
-                            <Cell dataKey="tipo" />
-                        </Column>
-                        <Column width={100} fixed className='coluna-pedidos'>
-                            <HeaderCell>Estoque</HeaderCell>
-                            <Cell dataKey="estoque" />
-                        </Column>
-                        <Column width={100} fixed className='coluna-pedidos'>
-                            <HeaderCell>Estoque Min.</HeaderCell>
-                            <Cell dataKey="estoqueMin" />
-                        </Column>
-                        <Column width={100} fixed className='coluna-pedidos'>
-                            <HeaderCell>Quantidade</HeaderCell>
-                            <ActionCell dataKey={'id'} />
-                        </Column>
-                        <Column width={70} fixed className='coluna-pedidos'>
-                            <HeaderCell>Excluir</HeaderCell>
-                            <ActionCell dataKey={'id'} botao={true} />
-                        </Column>
-                    </Table>
-                    <Pagination
-                        showLengthMenu={false}
-                        activePage={page}
-                        displayLength={10}
-                        total={this.state.produtos.length}
-                        onChangePage={this.handleChangePage}
-                        onChangeLength={this.handleChangeLength}
-                    />
-                    
-                    <div>
-                        <Modal show={this.state.show} onHide={this.close} size="xs">
-                            <Modal.Header>
-                                <Modal.Title>Adicionar produto</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                <ControlLabel>Nome</ControlLabel>
-                                <AutoComplete data={this.state.sugestoes} onChange={this.setNome} />
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <Button onClick={()=>{this.adicionaProd()}} appearance="primary">Adicionar</Button>
-                                <Button onClick={this.close} appearance="subtle">Cancelar</Button>
-                            </Modal.Footer>
-                        </Modal>
+                    <Modal show={show} onHide={close} size="xs">
+                        <Modal.Header>
+                            <Modal.Title>Adicionar produto</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <ControlLabel>Nome</ControlLabel>
+                            <AutoComplete data={nomesProd} onChange={setNome} />
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button onClick={() => { adicionaProd() }} appearance="primary">Adicionar</Button>
+                            <Button onClick={close} appearance="subtle">Cancelar</Button>
+                        </Modal.Footer>
+                    </Modal>
 
-                    </div>
                 </div>
-                <center>
-                    <Button appearance="primary" onClick={() => { this.finalizar() }}>Finalizar</Button>
-                </center>
-                <IconButton icon={<Icon icon="plus" />} size="xs" color="cyan" onClick={this.open} />
             </div>
-        );
-    }
+            <center>
+                <Button appearance="primary" onClick={() => { finalizar() }}>Finalizar</Button>
+            </center>
+            <IconButton icon={<Icon icon="plus" />} size="xs" color="cyan" onClick={open} />
+        </div>
+    );
+
 }
 
 

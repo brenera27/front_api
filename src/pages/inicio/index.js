@@ -176,7 +176,6 @@ export default function App(props) {
             showLengthMenu={false}
             activePage={page}
             displayLength={displayLength}
-            size="sm"
             total={produtos.length}
             onChangePage={handleChangePage}
             onChangeLength={handleChangeLength}
