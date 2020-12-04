@@ -1,11 +1,17 @@
-import React from 'react'
-import { Table } from 'rsuite';
+import React, {useEffect,useState} from 'react'
+import { Button, Table } from 'rsuite'
+import { history } from '../../../history'
 import "./styles.css"
-const { Column, HeaderCell, Cell } = Table;
+const { Column, HeaderCell, Cell } = Table
+
 
 //lista dos produtos filtrados da tela de listagem de produtos
-function finalizar(props) {
-    const data = props.data;
+export default function App(props) {
+    const [data,setData] = useState({})
+    useEffect(() => {
+        setData(props.data)
+    }, [])  
+     
     return (
         <div id="filtro-finalizacao">
             <div id="corpo-finalizacao">
@@ -27,10 +33,10 @@ function finalizar(props) {
                         <Cell dataKey="qtdComprar" />
                     </Column>
                 </Table>
+                <br />
+                <Button onClick={()=>{history.replace("/app/home")}}>Finalizar</Button>
             </div>
         </div>
-    );
+    )
 }
-
-export default finalizar
 

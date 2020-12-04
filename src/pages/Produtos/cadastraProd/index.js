@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import "./styles.css";
 import { Alert } from 'rsuite';
 import Formulario from '../components/cadastraProd'
 export default function App() {

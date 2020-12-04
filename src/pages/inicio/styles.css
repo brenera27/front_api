@@ -1,8 +1,9 @@
 
 #home{
-    margin-right: 20%;
-    margin-left: 20%;
+    margin-right: 2%;
+    margin-left: 2%;
     margin-top: 20px;
+    width: 900px;
     background-color: #E9ECEF;
     border-radius: 10px;
 }

@@ -11,12 +11,12 @@
 #tabela-pedidos {
 background-color: #e9ecef;
 border-radius: 10px;
-  width: 50%;
+  width: 850px;
   margin-top: 20px;
-  padding-right: 3%;
-  padding-left: 3%;
-  padding-bottom: 2%;
-  display: block;
-  margin-left: auto;
-  margin-right: auto
+}
+#conteudo-tab-ped{
+  margin-right: 3%;
+  margin-left: 3%;
+  padding-top: 3%;
+  padding-bottom: 3%;
 }

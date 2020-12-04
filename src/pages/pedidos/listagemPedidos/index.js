@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Button, Modal, Icon, ControlLabel, Input, AutoComplete, IconButton, Alert } from 'rsuite';
+import { Button, Modal, Icon, ControlLabel, Input, AutoComplete, IconButton, Alert, FlexboxGrid } from 'rsuite';
 import "./styles.css"
 import { Table } from 'rsuite';
 
@@ -25,17 +25,16 @@ export default function App(props) {
     const [data, setData] = useState()
 
     useEffect(() => {
-
-        loadProducts()
-
+         loadProducts()
     }, [])
 
     useEffect(() => {
-
-        setData(getData())
-        console.log(data)
-
+        atualizaTabela()
     }, [produtos])
+
+    function atualizaTabela() {
+        setData(getData())
+    }
 
     async function loadProducts() {
         setLoad(true)
@@ -46,7 +45,7 @@ export default function App(props) {
             resultado.map((produto) => {
                 produto.qtdComprar = null
             })
-            setProdutos(resultado)
+            await setProdutos(resultado)
 
         }).catch(error => {
             Alert.error("" + error)
@@ -105,6 +104,7 @@ export default function App(props) {
                 setProdutos(aux)
                 console.log(produtos)
                 i = produtos.length
+                atualizaTabela()
                 Alert.success('Removido com sucesso.')
             }
         }
@@ -115,10 +115,11 @@ export default function App(props) {
         const contem = produtos.some(produto => {
             return produto.nome == nome
         })
-        contem == false ? await axios.get(`https://apitestenode.herokuapp.com/busca-nome?nome=${nome}`).then((resultado) => {
+        contem == false ? await axios.get(`https://apitestenode.herokuapp.com/api/busca-nome?nome=${nome}`).then((resultado) => {
             resultado.data.produto ? produtos.push(resultado.data.produto) : Alert.error("" + resultado.data)
             setShow(false)
         }) : Alert.warning("Produto ja adicionado a sacola")
+        atualizaTabela()
         setLoad(false)
     }
 
@@ -153,73 +154,77 @@ export default function App(props) {
     };
 
     return (
-        <div id="tabela-pedidos">
-            <center>
-                <h3>Produtos Filtrados</h3>
-            </center>
-            <hr className="my-4"></hr>
-            <div>
-                <Table autoHeight AutoComplete data={data} loading={loading} className='tabela-pedidos'>
-                    <Column width={50} align="center" fixed className='coluna-pedidos'>
-                        <HeaderCell>Id</HeaderCell>
-                        <Cell dataKey="id" />
-                    </Column>
-                    <Column width={200} fixed className='coluna-pedidos'>
-                        <HeaderCell>Nome</HeaderCell>
-                        <Cell dataKey="nome" />
-                    </Column>
-                    <Column width={100} fixed className='coluna-pedidos'>
-                        <HeaderCell>Tipo</HeaderCell>
-                        <Cell dataKey="tipo" />
-                    </Column>
-                    <Column width={100} fixed className='coluna-pedidos'>
-                        <HeaderCell>Estoque</HeaderCell>
-                        <Cell dataKey="estoque" />
-                    </Column>
-                    <Column width={100} fixed className='coluna-pedidos'>
-                        <HeaderCell>Estoque Min.</HeaderCell>
-                        <Cell dataKey="estoqueMin" />
-                    </Column>
-                    <Column width={100} fixed className='coluna-pedidos'>
-                        <HeaderCell>Quantidade</HeaderCell>
-                        <ActionCell dataKey={'id'} />
-                    </Column>
-                    <Column width={70} fixed className='coluna-pedidos'>
-                        <HeaderCell>Excluir</HeaderCell>
-                        <ActionCell dataKey={'id'} botao={true} />
-                    </Column>
-                </Table>
-                <Pagination
-                    showLengthMenu={false}
-                    activePage={page}
-                    displayLength={10}
-                    total={produtos.length}
-                    onChangePage={handleChangePage}
-                    onChangeLength={handleChangeLength}
-                />
+        <FlexboxGrid justify="center">
+            <div id="tabela-pedidos">
+                <div id="conteudo-tab-ped">
+                    <center>
+                        <h3>Produtos Filtrados</h3>
+                    </center>
+                    <hr className="my-4"></hr>
+                    <div>
+                        <Table autoHeight AutoComplete data={data} loading={loading}>
+                            <Column width={50} align="center" fixed className='coluna-pedidos'>
+                                <HeaderCell>Id</HeaderCell>
+                                <Cell dataKey="id" />
+                            </Column>
+                            <Column width={200} fixed className='coluna-pedidos'>
+                                <HeaderCell>Nome</HeaderCell>
+                                <Cell dataKey="nome" />
+                            </Column>
+                            <Column width={100} fixed className='coluna-pedidos'>
+                                <HeaderCell>Tipo</HeaderCell>
+                                <Cell dataKey="tipo" />
+                            </Column>
+                            <Column width={100} fixed className='coluna-pedidos'>
+                                <HeaderCell>Estoque</HeaderCell>
+                                <Cell dataKey="estoque" />
+                            </Column>
+                            <Column width={100} fixed className='coluna-pedidos'>
+                                <HeaderCell>Estoque Min.</HeaderCell>
+                                <Cell dataKey="estoqueMin" />
+                            </Column>
+                            <Column width={100} fixed className='coluna-pedidos'>
+                                <HeaderCell>Quantidade</HeaderCell>
+                                <ActionCell dataKey={'id'} />
+                            </Column>
+                            <Column width={70} fixed className='coluna-pedidos'>
+                                <HeaderCell>Excluir</HeaderCell>
+                                <ActionCell dataKey={'id'} botao={true} />
+                            </Column>
+                        </Table>
+                        <Pagination
+                            showLengthMenu={false}
+                            activePage={page}
+                            displayLength={10}
+                            total={produtos.length}
+                            onChangePage={handleChangePage}
+                            onChangeLength={handleChangeLength}
+                        />
 
-                <div>
-                    <Modal show={show} onHide={close} size="xs">
-                        <Modal.Header>
-                            <Modal.Title>Adicionar produto</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <ControlLabel>Nome</ControlLabel>
-                            <AutoComplete data={nomesProd} onChange={setNome} />
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button onClick={() => { adicionaProd() }} appearance="primary">Adicionar</Button>
-                            <Button onClick={close} appearance="subtle">Cancelar</Button>
-                        </Modal.Footer>
-                    </Modal>
+                        <div>
+                            <Modal show={show} onHide={close} size="xs">
+                                <Modal.Header>
+                                    <Modal.Title>Adicionar produto</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <ControlLabel>Nome</ControlLabel>
+                                    <AutoComplete data={nomesProd} onChange={setNome} />
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button onClick={() => { adicionaProd() }} appearance="primary">Adicionar</Button>
+                                    <Button onClick={close} appearance="subtle">Cancelar</Button>
+                                </Modal.Footer>
+                            </Modal>
 
+                        </div>
+                    </div>
+                    <center>
+                        <Button appearance="primary" onClick={() => { finalizar() }}>Gerar Pedido</Button>
+                    </center>
+                    <IconButton icon={<Icon icon="plus" />} size="xs" color="cyan" onClick={open} />
                 </div>
             </div>
-            <center>
-                <Button appearance="primary" onClick={() => { finalizar() }}>Finalizar</Button>
-            </center>
-            <IconButton icon={<Icon icon="plus" />} size="xs" color="cyan" onClick={open} />
-        </div>
+        </FlexboxGrid>
     );
 
 }

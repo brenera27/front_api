@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import axios from 'axios';
-import "./styles.css";
 import { Alert } from 'rsuite';
 import Formulario from '../components/cadastraProd'
 

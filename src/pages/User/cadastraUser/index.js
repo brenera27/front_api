@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import "./styles.css";
 import { history } from '../../../history';
 import { Alert } from 'rsuite';
 import Formulario from '../components/cadastraUser'

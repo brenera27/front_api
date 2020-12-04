@@ -43,7 +43,7 @@ function filtragem(props) {
                 <div id="corpo-filtro-pedidos">
                     <center>
                         <h3>Filtro de Pedidos</h3>
-                    </center>
+                    
                     <hr className="my-4"></hr>
                     <br />
                     <Grid fluid>
@@ -54,6 +54,7 @@ function filtragem(props) {
                     <br />
                     <center>
                         <Button appearance="primary" onClick={() => { props.filtrar() }}>Filtrar</Button>
+                    </center>
                     </center>
                 </div>
             </div>

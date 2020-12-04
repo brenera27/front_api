@@ -1,13 +1,8 @@
-
-.possuiConta{
-    font-size:14px;
-}
-
-div.corpoCadastro{
+.corpoCadastro{
     margin-top: 2%;
     background-color: #E9ECEF;
-    width: 60%;
-    height: 650px;
+    width: 900px;
+    height: 550px;
     border-radius: 10px;
     text-align: left; 
 }

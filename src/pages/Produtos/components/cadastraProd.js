@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Button, Form, FlexboxGrid, FormControl, SelectPicker, ControlLabel, FormGroup, Schema, Loader } from 'rsuite';
-
+import { Button, Form, FlexboxGrid, Input, SelectPicker, ControlLabel, Row, Col, Schema, Loader } from 'rsuite';
+import "./styles.css";
 export default function App(props) {
 
   const { StringType, NumberType } = Schema.Types;
@@ -53,55 +53,50 @@ export default function App(props) {
   }
 
   return (
-    <>
-      <center>
-        <div className="corpoImput">
-          <div className="conteudo-input">
-            <center>
-              <h2>Cadastrar Produtos</h2>
-            </center>
-            <hr className="my-4"></hr>
-            <FlexboxGrid justify="center">
-              <Form model={model} onSubmit={() => props.salvar()}>
-
-                <FormGroup>
+    <FlexboxGrid justify="center">
+      <div className="corpoImput">
+        <div className="conteudo-input">
+          <center>
+            <h2>Cadastrar Produtos</h2>
+          </center>
+          <hr className="my-4"></hr>
+          <FlexboxGrid justify="center">
+            <Form model={model} onSubmit={() => props.salvar()}>
+              <Row className="show-grid">
+                <Col xs={12}>
                   <ControlLabel>Nome</ControlLabel>
-                  <FormControl name="nome" value={nome} onChange={value=>props.setProduto({...produto, nome:value})}/>
-                </FormGroup>
-
-                <FormGroup>
+                  <Input name="nome" value={nome} onChange={value => props.setProduto({ ...produto, nome: value })} />
+                </Col>
+                <Col xs={12}>
                   <ControlLabel>Tipo</ControlLabel>
                   <SelectPicker data={tipos} defaultValue={tipo} onChange={mudaTipo} style={{ width: 224 }} />
-                </FormGroup>
-
-                <FormGroup>
+                </Col>
+              </Row>
+              <br />
+              <Row className="show-grid">
+                <Col xs={8}>
                   <ControlLabel>Preço</ControlLabel>
-                  <FormControl name="preco" value={preco} type="number" step="0.01"  onChange={value=>props.setProduto({...produto, preco:value})}/>
-                </FormGroup>
-
-                <FormGroup>
+                  <Input name="preco" value={preco} type="number" step="0.01" onChange={value => props.setProduto({ ...produto, preco: value })} />
+                </Col>
+                <Col xs={8}>
                   <ControlLabel>Estoque</ControlLabel>
-                  <FormControl name="estoque" type="number" value={estoque}  onChange={value=>props.setProduto({...produto, estoque:value})}/>
-                </FormGroup>
-
-                <FormGroup>
+                  <Input name="estoque" type="number" value={estoque} onChange={value => props.setProduto({ ...produto, estoque: value })} />
+                </Col>
+                <Col xs={8}>
                   <ControlLabel>Estoque Mínimo</ControlLabel>
-                  <FormControl name="estoqueMin" type="number" value={estoqueMin}  onChange={value=>props.setProduto({...produto, estoqueMin:value})}/>
-                </FormGroup>
-                <center>
-                  <Button appearance="primary" type="submit">Salvar</Button>
-                </center>
-
-              </Form>
-
-            </FlexboxGrid>
-          </div>
+                  <Input name="estoqueMin" type="number" value={estoqueMin} onChange={value => props.setProduto({ ...produto, estoqueMin: value })} />
+                </Col>
+              </Row>
+              <br />
+              <center>
+                <Button appearance="primary" type="submit">Salvar</Button>
+              </center>
+            </Form>
+          </FlexboxGrid>
         </div>
-
-      </center>
-
+      </div>
       {props.loading == true ? <Loader backdrop content="Carregando..." vertical /> : null}
-    </>
+    </FlexboxGrid>
   )
 
 }

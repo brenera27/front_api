@@ -1,18 +1,14 @@
 div.corpoImput{
-    align-items: center;
     margin-top: 20px;
     background-color: #E9ECEF;
-    width: 25%;
-    height: 600px;
-
+    width: 500px;
+    height: 350px;
     border-radius: 10px;
-    text-align: left;
 }
 .conteudo-input{
     padding-top: 3%;
-    padding-left: 3%;
-    padding-right: 3%;
-    
+    padding-left: 5%;
+    padding-right: 5%;
 }
 
 

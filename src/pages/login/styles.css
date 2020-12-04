@@ -2,7 +2,7 @@
 div.corpoLogin{
     margin-top: 2%;
     background-color: #E9ECEF;
-    width: 20%;
+    width: 350px;
     height: 550px;
     border-radius: 10px;
     text-align: left; 
@@ -17,28 +17,5 @@ div.corpoLogin{
 #esqueci-senha{
     font-size:14px;
 }
-.logar{
-    background-color: Transparent;
-    -webkit-transform: scale(1.4);
-    transform: scale(1.4);
-    background-repeat:no-repeat;
-    border: none;
-    cursor:pointer;
-    overflow: hidden; 
-    transition: all 0.1s;
-    cursor: pointer;
-   
-}
-.logar:hover{
-    -webkit-transform: scale(2);
-    transform: scale(2);
-}
-.cadastrarUser{
-    transition: all 0.1s;
-    cursor: pointer;
-}
-.cadastrarUser:hover{
-    -webkit-transform: scale(1.3);
-    transform: scale(1.3);
-}
+
 

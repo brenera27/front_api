@@ -24,7 +24,7 @@ export default function DadosUser() {
     const { nome, email, senha, rua, palavraChave, bairro, cidade, estado, cep, complemento, numero, dataNascimento } = user;
 
     return (
-        <center>
+        <FlexboxGrid justify="center">
             {user == null ? null :
                 <div className="corpoDadosUser">
                     <div className="conteudo-user">
@@ -78,7 +78,7 @@ export default function DadosUser() {
                     </div>
                 </div>
             }{loading == true ? <Loader backdrop content="Carregando..." center vertical /> : null}
-        </center>
+        </FlexboxGrid>
     );
 
 }
