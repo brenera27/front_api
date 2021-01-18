@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../../api'
 import { Alert } from 'rsuite';
 import Formulario from '../components/cadastraProd'
 export default function App() {
@@ -12,7 +12,7 @@ export default function App() {
     if (nome != "" && preco != "" && estoque != "" && estoqueMin != "" && tipo != null) {
       setLoad(true)
       console.log(produto)
-      await axios.post("https://apitestenode.herokuapp.com/api/produtos/novo", { produto }).then(() => {
+      await API.post("produtos/novo", { produto }).then(() => {
         Alert.success('Cadastrado com Sucesso.')
         window.location.reload(false);
       }).catch((error) => {

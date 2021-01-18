@@ -1,16 +1,7 @@
 import React from 'react';
-
-import { Button, Form, FlexboxGrid, Input, SelectPicker, ControlLabel, Row, Col, Schema, Loader } from 'rsuite';
+import { Button, Form, FlexboxGrid, Input, SelectPicker, ControlLabel, Row, Col, Loader } from 'rsuite';
 import "./styles.css";
 export default function App(props) {
-
-  const { StringType, NumberType } = Schema.Types;
-  const model = Schema.Model({
-    nome: StringType().isRequired('Campo Obrigatório.'),
-    preco: NumberType().isRequired('Campo Obrigatório.'),
-    estoque: NumberType().isRequired('Campo Obrigatório.'),
-    estoqueMin: NumberType().isRequired('Campo Obrigatório.'),
-  });
 
   const produto = props.produto
   const { nome, preco, estoque, estoqueMin, tipo } = produto
@@ -61,7 +52,7 @@ export default function App(props) {
           </center>
           <hr className="my-4"></hr>
           <FlexboxGrid justify="center">
-            <Form model={model} onSubmit={() => props.salvar()}>
+            <Form onSubmit={() => props.salvar()}>
               <Row className="show-grid">
                 <Col xs={12}>
                   <ControlLabel>Nome</ControlLabel>

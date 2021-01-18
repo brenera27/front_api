@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "./styles.css";
 import { Loader, Icon, FlexboxGrid, IconButton } from 'rsuite';
-import axios from 'axios';
+import API from '../../api'
 import { history } from '../../../history'
 export default function DadosUser() {
 
@@ -15,7 +15,7 @@ export default function DadosUser() {
 
     async function buscaUser() {
         setLoad(true)
-        await axios.get(`https://apitestenode.herokuapp.com/api/usuarios/busca?id=${id}`).then((resposta) => {
+        await API.get(`usuarios/busca?id=${id}`).then((resposta) => {
             setUser(resposta.data.usuario)
         })
         setLoad(false)

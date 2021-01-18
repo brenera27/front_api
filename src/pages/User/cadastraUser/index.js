@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import API from '../../api'
 import { history } from '../../../history';
 import { Alert } from 'rsuite';
 import Formulario from '../components/cadastraUser'
@@ -16,7 +16,7 @@ export default function App() {
         setLoad(true)
         const { nome, email, senha, palavraChave, dataNascimento } = pessoa;
         if (nome != "" && email != "" && senha != "" && palavraChave != "" && dataNascimento != "") {
-            await axios.post("https://apitestenode.herokuapp.com/api/usuarios/novo", { pessoa }).then(response => {
+            await API.post("usuarios/novo", { pessoa }).then(response => {
                 if (response.data) {
                     history.push('/login');
                 }

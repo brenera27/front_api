@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import "./styles.css";
-import { history } from '../../history';
-import { Button, Modal, Icon, Grid, Col, Table, Alert, Row, IconButton, CheckPicker, FlexboxGrid } from 'rsuite';
-const { Column, HeaderCell, Cell, Pagination } = Table;
+import React, { useState, useEffect } from 'react'
+import API from '../api'
+import "./styles.css"
+import { history } from '../../history'
+import { Button, Modal, Icon, Grid, Table, Alert, IconButton, CheckPicker, FlexboxGrid } from 'rsuite'
+const { Column, HeaderCell, Cell, Pagination } = Table
 
 export default function App(props) {
 
@@ -56,51 +56,51 @@ export default function App(props) {
   }
 
   useEffect(() => {
-    loadProducts();
+    loadProducts()
   }, [])
 
   async function loadProducts() {
     setLoading(true)
-    await axios.get("https://apitestenode.herokuapp.com/api/produtos").then(resultado => {
-      setProdutos(resultado.data.produtos);
+    await API.get("produtos").then(resultado => {
+      setProdutos(resultado.data.produtos)
     }).catch(error => {
       Alert.error("" + error)
-    });
+    })
     setLoading(false)
 
   }
 
   function update(id) {
-    history.replace(`/app/atualiza/${id}`);
+    history.replace(`/app/atualiza/${id}`)
   }
 
   async function deleta(id) {
     setLoading(true)
     try {
-      await axios.delete(`https://apitestenode.herokuapp.com/api/produtos/apagar?id=${id}`);
+      await API.delete(`produtos/apagar?id=${id}`)
       Alert.success('Excluido com sucesso.')
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
-    loadProducts();
+    loadProducts()
   }
 
   //avança e retorna pagina
   function handleChangePage(dataKey) {
-    setPage(dataKey);
+    setPage(dataKey)
   }
   function handleChangeLength(dataKey) {
-    setPage(1);
+    setPage(1)
     displayLength = dataKey
   }
 
   //organiza os pordutos para listagem
   function getData() {
     return produtos.filter((v, i) => {
-      const start = displayLength * (page - 1);
-      const end = start + displayLength;
-      return i >= start && i < end;
-    });
+      const start = displayLength * (page - 1)
+      const end = start + displayLength
+      return i >= start && i < end
+    })
   }
 
   //abrir e fechar modal
@@ -121,7 +121,7 @@ export default function App(props) {
       loadProducts()
     } else {
       setLoading(true)
-      await axios.post("https://apitestenode.herokuapp.com/api/produtos-filtrados", { "filtros": filtros }).then(resultado => {
+      await API.post("produtos-filtrados", { "filtros": filtros }).then(resultado => {
         setProdutos(resultado.data.produtos);
       }).catch(error => {
         Alert.error("" + error)

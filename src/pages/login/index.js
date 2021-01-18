@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import "./styles.css"
 import { history } from '../../history'
 import { Alert, Button, Form, ControlLabel, FormGroup, Schema, Input, Loader, FlexboxGrid } from 'rsuite'
-
+import API from '../api'
 export default function App() {
 
     const { StringType } = Schema.Types
@@ -14,12 +13,12 @@ export default function App() {
 
     const [usuario, setUsuario] = useState({ email: "", senha: "" })
     const [palavraChave, setPalavra] = useState(null)
-    const [loading, setLoad] = useState(false)
     const [senhaErrada, setSenhaErrada] = useState(false)
+    const [loading, setLoad] = useState(false)
 
     async function verificaLogin() {
         setLoad(true)
-        await axios.post("https://apitestenode.herokuapp.com/api/usuarios/login", { "email": usuario.email, "senha": usuario.senha }).then(resultado => {
+        await API.post("usuarios/login", { "email": usuario.email, "senha": usuario.senha }).then(resultado => {
             const { data } = resultado
             if (data.mensagem) {
                 Alert.error("" + data.mensagem)

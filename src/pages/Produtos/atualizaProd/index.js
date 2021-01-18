@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
-import axios from 'axios';
 import { Alert } from 'rsuite';
 import Formulario from '../components/cadastraProd'
-
+import API from '../../api'
 export default function App() {
 
     useEffect(() => {
@@ -16,7 +15,7 @@ export default function App() {
 
     async function carregaProd() {
         setLoad(true)
-        await axios.get(`https://apitestenode.herokuapp.com/api/busca-id?id=${id}`).then((resposta) => {
+        await API.get(`busca-id?id=${id}`).then((resposta) => {
             setProduto(resposta.data.produto)
         })
         setLoad(false)
@@ -24,13 +23,19 @@ export default function App() {
 
     async function salvar() {
         setLoad(true)
+        let vazio = false
         const { nome, preco, estoque, estoqueMin, tipo } = produto
         if (nome != "" && preco != "" && estoque != "" && estoqueMin != "" && tipo != null) {
-            await axios.put("https://apitestenode.herokuapp.com/api/produtos/update", { produto }).then((resposta) => {
+            await API.put("produtos/update", { produto }).then((resposta) => {
                 Alert.success('Atualizado com Sucesso.')
             }).catch((error) => {
                 Alert.error("" + error)
             });
+        }else{
+            if(nome == ""){Alert.warning('Nome obrigatório.')}
+            if(preco == ""){Alert.warning('Preco obrigatório.')}
+            if(estoque == ""){Alert.warning('Estoque obrigatório.')}
+            if(estoqueMin == ""){Alert.warning('Estoque Mínimo obrigatório.')}
         }
         setLoad(false)
     }

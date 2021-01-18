@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import API from '../api'
 import "./styles.css";
 import { history } from '../../history';
 export default class Main extends Component {
@@ -30,7 +30,7 @@ export default class Main extends Component {
         const { senhaUm, senhaDois } = this.state;
         if (senhaUm != "" && senhaDois != "") {
             if (senhaUm === senhaDois) {
-                await axios.put("https://apitestenode.herokuapp.com/api/usuarios/update", {
+                await API.put("usuarios/update", {
                     "id": this.state.id, "senha": senhaUm
                 }).then(resultado => {
                     const { data } = resultado;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import API from '../../api'
 import { Button, Modal, Icon, ControlLabel, Input, AutoComplete, IconButton, Alert, FlexboxGrid } from 'rsuite';
 import "./styles.css"
 import { Table } from 'rsuite';
@@ -40,7 +40,7 @@ export default function App(props) {
         setLoad(true)
         const filtros = props.filtros
         // Busca pordutos com filtros
-        await axios.post("https://apitestenode.herokuapp.com/api/produtos-filtrados", { filtros }).then(async resposta => {
+        await API.post("produtos-filtrados", { filtros }).then(async resposta => {
             let resultado = resposta.data.produtos
             resultado.map((produto) => {
                 produto.qtdComprar = null
@@ -52,7 +52,7 @@ export default function App(props) {
         });
 
         // Busca todos os produtos para salvar os nomes e usar o imput autoComplete
-        await axios.get("https://apitestenode.herokuapp.com/api/produtos").then(resposta => {
+        await API.get("produtos").then(resposta => {
             let nomes = resposta.data.produtos.map((produto) => {
                 return produto.nome
             })
@@ -115,7 +115,7 @@ export default function App(props) {
         const contem = produtos.some(produto => {
             return produto.nome == nome
         })
-        contem == false ? await axios.get(`https://apitestenode.herokuapp.com/api/busca-nome?nome=${nome}`).then((resultado) => {
+        contem == false ? await API.get(`busca-nome?nome=${nome}`).then((resultado) => {
             resultado.data.produto ? produtos.push(resultado.data.produto) : Alert.error("" + resultado.data)
             setShow(false)
         }) : Alert.warning("Produto ja adicionado a sacola")
